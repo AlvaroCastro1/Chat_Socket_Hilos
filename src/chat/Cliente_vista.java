@@ -187,7 +187,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable{
                 cliente = servidor_cliente.accept();
                 ObjectInputStream flujo_entrada = new ObjectInputStream(cliente.getInputStream());
                 paqueteRecibido = (PaqueteEnvio) flujo_entrada.readObject();
-                campo_chat.append(paqueteRecibido.getNombre()+": "+paqueteRecibido.getMensaje());
+                campo_chat.append(paqueteRecibido.getNombre()+": "+paqueteRecibido.getMensaje()+"\n");
             }
         } catch (Exception e) {
             System.out.println(e);
