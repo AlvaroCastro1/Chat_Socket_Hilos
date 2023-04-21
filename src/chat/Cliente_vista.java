@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -18,9 +19,14 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable{
     private final int puerto = 5000;
     private final int puerto2 = 9090;
     private final String host = "192.168.1.100";
+    private String nombre = "";
+    
+    
     
     public Cliente_vista() {
         initComponents();
+        nombre = JOptionPane.showInputDialog(null, "¿Cual es tu nombre de usuario?");
+        jl_nombre.setText("Cliente: "+nombre);
         Thread hilo = new Thread(this);
         hilo.start();
     }
@@ -40,9 +46,8 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable{
         jScrollPane1 = new javax.swing.JScrollPane();
         campo_chat = new javax.swing.JTextArea();
         jSeparator1 = new javax.swing.JSeparator();
-        txt_nombre = new javax.swing.JTextField();
         txt_IP = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        jl_nombre = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -60,7 +65,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable{
         campo_chat.setRows(5);
         jScrollPane1.setViewportView(campo_chat);
 
-        jLabel2.setText("Nombre:");
+        jl_nombre.setText("Nombre:");
 
         jLabel3.setText("IP");
 
@@ -77,9 +82,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable{
                         .addGap(30, 30, 30)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txt_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jl_nombre)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -100,11 +103,9 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable{
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txt_IP, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txt_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
-                        .addComponent(jLabel3)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(jl_nombre)))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -120,12 +121,12 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable{
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        campo_chat.append(txt_nombre.getText()+": "+txt_mensaje.getText()+"\n");
+        campo_chat.append(nombre+": "+txt_mensaje.getText()+"\n");
         
         try {
             Socket miSocket = new Socket(host, puerto);
             
-            PaqueteEnvio datos = new PaqueteEnvio(txt_nombre.getText(), txt_IP.getText(),txt_mensaje.getText());
+            PaqueteEnvio datos = new PaqueteEnvio(nombre, txt_IP.getText(),txt_mensaje.getText());
             ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream());
             paquete_datos.writeObject(datos);
             paquete_datos.close();
@@ -199,12 +200,11 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable{
     private javax.swing.JTextArea campo_chat;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel jl_nombre;
     private javax.swing.JTextField txt_IP;
     private javax.swing.JTextField txt_mensaje;
-    private javax.swing.JTextField txt_nombre;
     // End of variables declaration//GEN-END:variables
 }
