@@ -16,6 +16,9 @@ public class PaqueteEnvio implements Serializable{
         this.mensaje = mensaje;
     }
 
+    public PaqueteEnvio() {
+    }
+
     public String getNombre() {
         return nombre;
     }

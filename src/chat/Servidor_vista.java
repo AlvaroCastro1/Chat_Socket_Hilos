@@ -3,6 +3,7 @@ package chat;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
@@ -125,16 +126,22 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                 ip = paquete_recibido.getIp();
                 mensaje = paquete_recibido.getMensaje();
 
-                area_texto.append(nombre + ": " + mensaje + " para " + ip + "\n");
+                if (!mensaje.equals("Online")) {
+                    area_texto.append(nombre + ": " + mensaje + " para " + ip + "\n");
+                    Socket enviaDestinatario = new Socket(ip, puerto2);
+                    ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
+                    paqueteReenvio.writeObject(paquete_recibido);
+                    enviaDestinatario.close();
+                    paqueteReenvio.close();
+                    miSocket.close();
 
-                Socket enviaDestinatario = new Socket(ip, puerto2);
-                ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
-                paqueteReenvio.writeObject(paquete_recibido);
-                enviaDestinatario.close();
-
-                paqueteReenvio.close();
-                miSocket.close();
-
+                } else {
+                    //------------------------Detectar online
+                    InetAddress localizacion = miSocket.getInetAddress();
+                    String ipRemote = localizacion.getHostAddress();
+                    area_texto.append(ipRemote + " Online\n");
+                }
+                
                 /*DataInputStream flujo_entrada = new DataInputStream(miSocket.getInputStream());
                 String mensaje = flujo_entrada.readUTF();
 

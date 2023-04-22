@@ -49,6 +49,11 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
         cb_clientes = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Dialog", 2, 18)); // NOI18N
         jLabel1.setText("Cliente");
@@ -70,7 +75,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
         jLabel3.setFont(new java.awt.Font("Dialog", 2, 18)); // NOI18N
         jLabel3.setText("IP");
 
-        cb_clientes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cliente 1", "Cliente 2", "Cliente 3" }));
+        cb_clientes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "192.168.1.100" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -142,6 +147,19 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
             Logger.getLogger(Cliente_vista.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        try {
+            Socket misocket = new Socket(host, puerto);
+            PaqueteEnvio datos = new PaqueteEnvio();
+            datos.setMensaje("Online");
+            ObjectOutputStream paquete_datos = new ObjectOutputStream(misocket.getOutputStream());
+            paquete_datos.writeObject(datos);
+            misocket.close();
+        } catch (Exception e2) {
+            System.out.println(e2);
+        }
+    }//GEN-LAST:event_formWindowOpened
 
     /**
      * @param args the command line arguments
