@@ -1,6 +1,7 @@
 package chat;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  *
@@ -9,6 +10,15 @@ import java.io.Serializable;
 public class PaqueteEnvio implements Serializable{
 
     private String nombre, ip, mensaje;
+    private ArrayList<String> Ips;
+
+    public ArrayList<String> getIps() {
+        return Ips;
+    }
+
+    public void setIps(ArrayList<String> Ips) {
+        this.Ips = Ips;
+    }
 
     public PaqueteEnvio(String nombre, String ip, String mensaje) {
         this.nombre = nombre;

@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,6 +45,7 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
         area_texto.setRows(5);
         jScrollPane1.setViewportView(area_texto);
 
+        jLabel1.setFont(new java.awt.Font("Dialog", 2, 18)); // NOI18N
         jLabel1.setText("Servidor");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -56,14 +58,14 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                         .addGap(14, 14, 14)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(172, 172, 172)
+                        .addGap(159, 159, 159)
                         .addComponent(jLabel1)))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(18, Short.MAX_VALUE)
+                .addContainerGap(10, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -84,7 +86,7 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Linux".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -115,6 +117,7 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
 
             String nombre, ip, mensaje;
             PaqueteEnvio paquete_recibido;
+            ArrayList<String> listaIp = new ArrayList<String>();
 
             while (true) {
                 Socket miSocket = servidor.accept();
@@ -140,8 +143,19 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                     InetAddress localizacion = miSocket.getInetAddress();
                     String ipRemote = localizacion.getHostAddress();
                     area_texto.append(ipRemote + " Online\n");
+                    listaIp.add(ipRemote);
+                    paquete_recibido.setIps(listaIp);
+                    for (String ip_i : listaIp) {
+                        System.out.println("Array " + ip_i);
+                        Socket enviaDestinatario = new Socket(ip_i, puerto2);
+                        ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
+                        paqueteReenvio.writeObject(paquete_recibido);
+                        enviaDestinatario.close();
+                        paqueteReenvio.close();
+                        miSocket.close();
+                    }
                 }
-                
+
                 /*DataInputStream flujo_entrada = new DataInputStream(miSocket.getInputStream());
                 String mensaje = flujo_entrada.readUTF();
 
