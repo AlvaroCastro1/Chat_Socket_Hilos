@@ -14,19 +14,17 @@ import javax.swing.JOptionPane;
  *
  * @author Alvaro
  */
-public class Cliente_vista extends javax.swing.JFrame implements Runnable{
+public class Cliente_vista extends javax.swing.JFrame implements Runnable {
 
     private final int puerto = 5000;
     private final int puerto2 = 9090;
     private final String host = "192.168.1.100";
     private String nombre = "";
-    
-    
-    
+
     public Cliente_vista() {
         initComponents();
         nombre = JOptionPane.showInputDialog(null, "¿Cual es tu nombre de usuario?");
-        jl_nombre.setText("Cliente: "+nombre);
+        jl_nombre.setText("Cliente: " + nombre);
         Thread hilo = new Thread(this);
         hilo.start();
     }
@@ -46,12 +44,13 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable{
         jScrollPane1 = new javax.swing.JScrollPane();
         campo_chat = new javax.swing.JTextArea();
         jSeparator1 = new javax.swing.JSeparator();
-        txt_IP = new javax.swing.JTextField();
         jl_nombre = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        cb_clientes = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jLabel1.setFont(new java.awt.Font("Dialog", 2, 18)); // NOI18N
         jLabel1.setText("Cliente");
 
         jButton1.setText("Enviar");
@@ -65,9 +64,13 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable{
         campo_chat.setRows(5);
         jScrollPane1.setViewportView(campo_chat);
 
+        jl_nombre.setFont(new java.awt.Font("Dialog", 2, 18)); // NOI18N
         jl_nombre.setText("Nombre:");
 
+        jLabel3.setFont(new java.awt.Font("Dialog", 2, 18)); // NOI18N
         jLabel3.setText("IP");
+
+        cb_clientes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cliente 1", "Cliente 2", "Cliente 3" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -76,36 +79,35 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable{
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(178, 178, 178)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(30, 30, 30)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jl_nombre)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txt_IP, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addComponent(cb_clientes, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(txt_mensaje, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING))))
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(171, 171, 171)
+                        .addComponent(jLabel1)))
                 .addContainerGap(32, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(19, 19, 19)
+                .addGap(14, 14, 14)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txt_IP, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel3)
-                        .addComponent(jl_nombre)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jl_nombre)
+                    .addComponent(cb_clientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -121,22 +123,19 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable{
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        campo_chat.append(nombre+": "+txt_mensaje.getText()+"\n");
-        
+        campo_chat.append(nombre + ": " + txt_mensaje.getText() + "\n");
+
         try {
             Socket miSocket = new Socket(host, puerto);
-            
-            PaqueteEnvio datos = new PaqueteEnvio(nombre, txt_IP.getText(),txt_mensaje.getText());
+
+            PaqueteEnvio datos = new PaqueteEnvio(nombre, cb_clientes.getSelectedItem().toString(), txt_mensaje.getText());
             ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream());
             paquete_datos.writeObject(datos);
             paquete_datos.close();
-            
-            
+
             /*DataOutputStream flujo_salida = new DataOutputStream(miSocket.getOutputStream());
             flujo_salida.writeUTF(txt_mensaje.getText());
             flujo_salida.close();*/
-            
-            
         } catch (UnknownHostException ex) {
             Logger.getLogger(Cliente_vista.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -179,32 +178,32 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable{
         });
     }
 
-    public void run(){
+    public void run() {
         try {
             ServerSocket servidor_cliente = new ServerSocket(puerto2);
             Socket cliente;
             PaqueteEnvio paqueteRecibido;
-            while (true) {                
+            while (true) {
                 cliente = servidor_cliente.accept();
                 ObjectInputStream flujo_entrada = new ObjectInputStream(cliente.getInputStream());
                 paqueteRecibido = (PaqueteEnvio) flujo_entrada.readObject();
-                campo_chat.append(paqueteRecibido.getNombre()+": "+paqueteRecibido.getMensaje()+"\n");
+                campo_chat.append(paqueteRecibido.getNombre() + ": " + paqueteRecibido.getMensaje() + "\n");
             }
         } catch (Exception e) {
             System.out.println(e);
         }
     }
-    
-    
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea campo_chat;
+    private javax.swing.JComboBox<String> cb_clientes;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel jl_nombre;
-    private javax.swing.JTextField txt_IP;
     private javax.swing.JTextField txt_mensaje;
     // End of variables declaration//GEN-END:variables
 }

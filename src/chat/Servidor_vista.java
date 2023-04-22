@@ -112,30 +112,29 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
             // System.out.println("escuchando");
             ServerSocket servidor = new ServerSocket(puerto);
 
-            String nombre,ip,mensaje;
+            String nombre, ip, mensaje;
             PaqueteEnvio paquete_recibido;
 
             while (true) {
                 Socket miSocket = servidor.accept();
 
-                
                 ObjectInputStream paquete_datos = new ObjectInputStream(miSocket.getInputStream());
                 paquete_recibido = (PaqueteEnvio) paquete_datos.readObject();
 
                 nombre = paquete_recibido.getNombre();
                 ip = paquete_recibido.getIp();
                 mensaje = paquete_recibido.getMensaje();
-                
-                area_texto.append(nombre+": "+mensaje+" para "+ip+"\n");
-                
+
+                area_texto.append(nombre + ": " + mensaje + " para " + ip + "\n");
+
                 Socket enviaDestinatario = new Socket(ip, puerto2);
                 ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
                 paqueteReenvio.writeObject(paquete_recibido);
                 enviaDestinatario.close();
-                
+
                 paqueteReenvio.close();
                 miSocket.close();
-                
+
                 /*DataInputStream flujo_entrada = new DataInputStream(miSocket.getInputStream());
                 String mensaje = flujo_entrada.readUTF();
 
