@@ -1,13 +1,20 @@
 package chat;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.Timer;
 
 /**
  *
@@ -17,24 +24,40 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
 
     private final int puerto = 5000;
     private final int puerto2 = 9090;
-    private final String host = "192.168.1.101";
+    private final String host = "localhost";
     private String nombre = "";
     HashMap<String, String> Ips;
     int contador_panel =0 ;
     int max_chats = 5;
     private JTextArea[] textAreas = new JTextArea[max_chats];
+    private Timer timer;
 
 
+    public void reloj(){
+        timer = new Timer(1000, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                updateTimeLabel();
+            }
+        });
+        timer.start();
+    }
     
+    private void updateTimeLabel() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+        Date date = new Date();
+        String dateTime = dateFormat.format(date);
+        jl_reloj.setText(dateTime);
+    }
     
 
     public Cliente_vista_v2() {
         initComponents();
+        reloj();
         setLocationRelativeTo(null);
-        /* nombre = JOptionPane.showInputDialog(null, "¿Cual es tu nombre de usuario?");
+        nombre = JOptionPane.showInputDialog(null, "¿Cual es tu nombre de usuario?");
         jl_nombre.setText("Cliente: " + nombre);
         Thread hilo = new Thread(this);
-        hilo.start(); */ 
+        hilo.start();
     }
 
     /**
@@ -48,8 +71,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
 
         jl_Titulo = new javax.swing.JLabel();
         jl_nombre = new javax.swing.JLabel();
-        jl_clientes = new javax.swing.JLabel();
-        cb_clientes = new javax.swing.JComboBox<>();
+        jl_reloj = new javax.swing.JLabel();
         separador = new javax.swing.JSeparator();
         TabbedPane_para_chats = new javax.swing.JTabbedPane();
         jButton1 = new javax.swing.JButton();
@@ -67,10 +89,8 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         jl_nombre.setFont(new java.awt.Font("Dialog", 2, 18)); // NOI18N
         jl_nombre.setText("Nombre:");
 
-        jl_clientes.setFont(new java.awt.Font("Dialog", 2, 18)); // NOI18N
-        jl_clientes.setText("Para:");
-
-        cb_clientes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Clientes" }));
+        jl_reloj.setFont(new java.awt.Font("Dialog", 2, 18)); // NOI18N
+        jl_reloj.setText("hora");
 
         jButton1.setText("agregar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -83,29 +103,28 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 17, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(TabbedPane_para_chats)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jl_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jl_clientes, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cb_clientes, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(17, 17, 17))
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(171, 171, 171)
+                .addComponent(jl_Titulo)
+                .addContainerGap(195, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jl_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jl_reloj, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(separador)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(171, 171, 171)
-                        .addComponent(jl_Titulo))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
-                        .addComponent(separador, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(168, 168, 168)
-                        .addComponent(jButton1)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jButton1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(TabbedPane_para_chats, javax.swing.GroupLayout.PREFERRED_SIZE, 385, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(10, 10, 10)))))
+                .addGap(12, 12, 12))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -114,11 +133,10 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                 .addComponent(jl_Titulo)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jl_clientes)
                     .addComponent(jl_nombre)
-                    .addComponent(cb_clientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jl_reloj))
                 .addGap(18, 18, 18)
-                .addComponent(TabbedPane_para_chats, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                .addComponent(TabbedPane_para_chats, javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(separador, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -142,7 +160,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
     }
     
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        /*
+        
         try {
             Socket misocket = new Socket(host, puerto);
             PaqueteEnvio datos = new PaqueteEnvio();
@@ -157,29 +175,48 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         } catch (Exception e2) {
             System.out.println(e2);
         }
-        */
     }//GEN-LAST:event_formWindowOpened
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (contador_panel < max_chats) {
-        textAreas[contador_panel] = new JTextArea();
-
-        // Agregamos cada JTextArea al JTabbedPane con un identificador y un título
-        JTextArea textArea = textAreas[contador_panel];
-        String title = "Pestaña " + (contador_panel + 1);
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        TabbedPane_para_chats.addTab(title, scrollPane);
-
-        // Agregamos el JTabbedPane al JFrame
-        //getContentPane().add(TabbedPane_para_chats, BorderLayout.CENTER);
-        contador_panel++;
-        }else{
-            JOptionPane.showMessageDialog(null, "No hay mas espacios para chats :/", "Error", JOptionPane.ERROR_MESSAGE);
-
+        try {
+            ServerSocket servidor_cliente = new ServerSocket(puerto2);
+            Socket cliente;
+            PaqueteEnvio paqueteRecibido;
+            while (true) {
+                cliente = servidor_cliente.accept();
+                ObjectInputStream flujo_entrada = new ObjectInputStream(cliente.getInputStream());
+                paqueteRecibido = (PaqueteEnvio) flujo_entrada.readObject();
+                if (paqueteRecibido.getMensaje().equals("Online")) {
+                    // añadir textArea 
+                    HashMap<String, String> IPsMenu = paqueteRecibido.getIps();
+                    Ips = paqueteRecibido.getIps();
+                    for (String clave : IPsMenu.values()) {
+                       generar_clientes(clave);
+                    }
+                }else{
+                    System.out.println(paqueteRecibido.getRemitente_nombre()+ ": " + paqueteRecibido.getMensaje() + "\n");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e);
         }
-        
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    public void generar_clientes(String nombre_destinatario ){
+        if (contador_panel < max_chats) {
+            textAreas[contador_panel] = new JTextArea();
+
+            // Agregamos cada JTextArea al JTabbedPane con un identificador y un título
+            JTextArea textArea = textAreas[contador_panel];
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            TabbedPane_para_chats.addTab(nombre_destinatario, scrollPane);
+
+            contador_panel++;
+        }else{
+            JOptionPane.showMessageDialog(null, "No hay mas espacios para chats :/", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -231,10 +268,10 @@ System.out.println(paqueteRecibido.getRemitente_nombre()+ ": " + paqueteRecibido
                     // campo_chat.append(paqueteRecibido.getIps()+"\n");
                     HashMap<String, String> IPsMenu = paqueteRecibido.getIps();
                     Ips = paqueteRecibido.getIps();
-                    cb_clientes.removeAll();
+                    //cb_clientes.removeAll();
                     for (String clave : IPsMenu.values()) {
                        //System.out.println(clave);
-                       cb_clientes.addItem(clave);
+                        generar_clientes(clave);
                     }
                 }
             }
@@ -246,11 +283,10 @@ System.out.println(paqueteRecibido.getRemitente_nombre()+ ": " + paqueteRecibido
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTabbedPane TabbedPane_para_chats;
-    private javax.swing.JComboBox<String> cb_clientes;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jl_Titulo;
-    private javax.swing.JLabel jl_clientes;
     private javax.swing.JLabel jl_nombre;
+    private javax.swing.JLabel jl_reloj;
     private javax.swing.JSeparator separador;
     // End of variables declaration//GEN-END:variables
 }
