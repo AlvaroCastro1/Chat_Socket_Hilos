@@ -21,7 +21,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
 
     private final int puerto = 5000;
     private final int puerto2 = 9090;
-    private final String host = "192.168.1.79";
+    private final String host = "192.168.1.101";
     private String nombre = "";
     HashMap<String, String> Ips;
 
