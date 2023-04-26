@@ -3,10 +3,12 @@ package chat;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -19,8 +21,9 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
 
     private final int puerto = 5000;
     private final int puerto2 = 9090;
-    private final String host = "192.168.1.100";
+    private final String host = "192.168.1.79";
     private String nombre = "";
+    HashMap<String, String> Ips;
 
     public Cliente_vista() {
         initComponents();
@@ -133,16 +136,23 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        campo_chat.append(nombre + ": " + txt_mensaje.getText() + "\n");
 
         try {
             Socket miSocket = new Socket(host, puerto);
 
-            PaqueteEnvio datos = new PaqueteEnvio(nombre, cb_clientes.getSelectedItem().toString(), txt_mensaje.getText());
+            
+            InetAddress host = InetAddress.getLocalHost();
+            String remitente_nombre= nombre;
+            String remitente_ip=host.getHostName();
+            String destinatario_nombre=cb_clientes.getSelectedItem().toString();
+            String destinatario_ip= buscar_usuario(destinatario_nombre);
+            PaqueteEnvio datos = new PaqueteEnvio(txt_mensaje.getText().trim(), remitente_nombre, remitente_ip, destinatario_nombre, destinatario_ip);
             ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream());
             paquete_datos.writeObject(datos);
             paquete_datos.close();
 
+            campo_chat.append(nombre + ": " + txt_mensaje.getText() + "\n");
+            
             /*DataOutputStream flujo_salida = new DataOutputStream(miSocket.getOutputStream());
             flujo_salida.writeUTF(txt_mensaje.getText());
             flujo_salida.close();*/
@@ -153,11 +163,27 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    
+    public String buscar_usuario(String nombre){
+        String clave = null;
+        for (Map.Entry<String, String> entry : Ips.entrySet()) {
+            if (entry.getValue().equals(nombre)) {
+                clave = entry.getKey();
+                break;
+            }
+        }
+        return clave;
+    }
+    
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
             Socket misocket = new Socket(host, puerto);
             PaqueteEnvio datos = new PaqueteEnvio();
             datos.setMensaje("Online");
+            datos.setRemitente_nombre(nombre);
+            
+            InetAddress host = InetAddress.getLocalHost();
+            datos.setRemitente_ip(host.getHostAddress() );
             ObjectOutputStream paquete_datos = new ObjectOutputStream(misocket.getOutputStream());
             paquete_datos.writeObject(datos);
             misocket.close();
@@ -211,14 +237,15 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
                 ObjectInputStream flujo_entrada = new ObjectInputStream(cliente.getInputStream());
                 paqueteRecibido = (PaqueteEnvio) flujo_entrada.readObject();
                 if (! paqueteRecibido.getMensaje().equals("Online")) {
-                    campo_chat.append(paqueteRecibido.getNombre() + ": " + paqueteRecibido.getMensaje() + "\n");
+                    campo_chat.append(paqueteRecibido.getRemitente_nombre()+ ": " + paqueteRecibido.getMensaje() + "\n");
                 }else{
                     // campo_chat.append(paqueteRecibido.getIps()+"\n");
-                    ArrayList<String> IPsMenu = new ArrayList<String>();
-                    IPsMenu = paqueteRecibido.getIps();
+                    HashMap<String, String> IPsMenu = paqueteRecibido.getIps();
+                    Ips = paqueteRecibido.getIps();
                     cb_clientes.removeAll();
-                    for (String i : IPsMenu) {
-                        cb_clientes.addItem(i);
+                    for (String clave : IPsMenu.values()) {
+                       //System.out.println(clave);
+                       cb_clientes.addItem(clave);
                     }
                 }
             }
