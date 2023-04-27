@@ -159,7 +159,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
     }// </editor-fold>//GEN-END:initComponents
 
     
-    public String buscar_usuario(String nombre){
+    public String buscar_ip_usuario(String nombre){
         String clave = null;
         for (Map.Entry<String, String> entry : Ips.entrySet()) {
             if (entry.getValue().equals(nombre)) {
@@ -169,9 +169,15 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         }
         return clave;
     }
-    public int buscar_indice_usuario(String nombre){
-        
-        return 1;
+    public int buscar_tab_usuario(String nombre_cliente){
+        int indice = -1; // Índice del tab encontrado (inicializado en -1 por si no se encuentra)
+        for (int i = 0; i < TabbedPane_para_chats.getTabCount(); i++) {
+            if (TabbedPane_para_chats.getTitleAt(i).equals(nombre_cliente)) {
+                indice = i; // Se encontró el tab, asignamos su índice a la variable
+                break; // Terminamos de buscar
+            }
+        }
+        return indice;
     }
     
     
@@ -204,16 +210,14 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_formWindowOpened
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        int indice_chat = TabbedPane_para_chats.getSelectedIndex();
-        textAreas[indice_chat].append(nombre + ": " + txt_mensaje.getText() + "\n");
-        /*try {
+        try {
             Socket miSocket = new Socket(host, puerto);
             int indice_chat = TabbedPane_para_chats.getSelectedIndex();
             InetAddress host = InetAddress.getLocalHost();
             String remitente_nombre= nombre;
             String remitente_ip=host.getHostName();
             String destinatario_nombre = TabbedPane_para_chats.getTitleAt( indice_chat );
-            String destinatario_ip= buscar_usuario(destinatario_nombre);
+            String destinatario_ip= buscar_ip_usuario(destinatario_nombre);
             PaqueteEnvio datos = new PaqueteEnvio(txt_mensaje.getText().trim(), remitente_nombre, remitente_ip, destinatario_nombre, destinatario_ip);
             ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream());
             paquete_datos.writeObject(datos);
@@ -225,7 +229,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
             Logger.getLogger(Cliente_vista.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Cliente_vista.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     public void generar_clientes(String nombre_destinatario ){
@@ -289,7 +293,8 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                 ObjectInputStream flujo_entrada = new ObjectInputStream(cliente.getInputStream());
                 paqueteRecibido = (PaqueteEnvio) flujo_entrada.readObject();
                 if (! paqueteRecibido.getMensaje().equals("Online")) {
-System.out.println(paqueteRecibido.getRemitente_nombre()+ ": " + paqueteRecibido.getMensaje() + "\n");
+                    int i = buscar_tab_usuario( paqueteRecibido.getRemitente_nombre() );
+                    textAreas[i].append(paqueteRecibido.getRemitente_nombre()+ ": " + paqueteRecibido.getMensaje() + "\n");
                 }else{
                     // campo_chat.append(paqueteRecibido.getIps()+"\n");
                     HashMap<String, String> IPsMenu = paqueteRecibido.getIps();
