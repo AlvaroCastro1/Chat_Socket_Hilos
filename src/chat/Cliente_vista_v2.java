@@ -190,6 +190,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
             datos.setRemitente_nombre(nombre);
 
             InetAddress host = InetAddress.getLocalHost();
+            System.out.println(host.getHostAddress());
             datos.setRemitente_ip(host.getHostAddress());
             ObjectOutputStream paquete_datos = new ObjectOutputStream(misocket.getOutputStream());
             paquete_datos.writeObject(datos);
