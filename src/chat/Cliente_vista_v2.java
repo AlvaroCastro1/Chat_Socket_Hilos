@@ -28,16 +28,15 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
 
     private final int puerto = 5000;
     private final int puerto2 = 9090;
-    private final String host = "localhost";
+    private final String host = "192.168.1.100";
     private String nombre = "";
     HashMap<String, String> Ips;
-    int contador_panel =0 ;
+    int contador_panel = 0;
     int max_chats = 5;
     private JTextArea[] textAreas = new JTextArea[max_chats];
     private Timer timer;
 
-
-    public void reloj(){
+    public void reloj() {
         timer = new Timer(1000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 updateTimeLabel();
@@ -45,14 +44,13 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         });
         timer.start();
     }
-    
+
     private void updateTimeLabel() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
         Date date = new Date();
         String dateTime = dateFormat.format(date);
         jl_reloj.setText(dateTime);
     }
-    
 
     public Cliente_vista_v2() {
         initComponents();
@@ -62,10 +60,6 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         jl_nombre.setText("Cliente: " + nombre);
         Thread hilo = new Thread(this);
         hilo.start();
-        generar_clientes("x");
-        generar_clientes("d");
-        generar_clientes("c");
-        generar_clientes("y");
         //limpiar_tab();
     }
 
@@ -158,8 +152,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    
-    public String buscar_ip_usuario(String nombre){
+    public String buscar_ip_usuario(String nombre) {
         String clave = null;
         for (Map.Entry<String, String> entry : Ips.entrySet()) {
             if (entry.getValue().equals(nombre)) {
@@ -169,7 +162,8 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         }
         return clave;
     }
-    public int buscar_tab_usuario(String nombre_cliente){
+
+    public int buscar_tab_usuario(String nombre_cliente) {
         int indice = -1; // Índice del tab encontrado (inicializado en -1 por si no se encuentra)
         for (int i = 0; i < TabbedPane_para_chats.getTabCount(); i++) {
             if (TabbedPane_para_chats.getTitleAt(i).equals(nombre_cliente)) {
@@ -179,34 +173,30 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         }
         return indice;
     }
-    
-    
-    public void limpiar_tab(){
+
+    public void limpiar_tab() {
         for (Map.Entry<String, String> entry : Ips.entrySet()) {
         }
-        
-        
+
         int indice = TabbedPane_para_chats.indexOfTab(nombre);
         TabbedPane_para_chats.removeTabAt(indice);
     }
-    
+
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        /*
         try {
             Socket misocket = new Socket(host, puerto);
             PaqueteEnvio datos = new PaqueteEnvio();
             datos.setMensaje("Online");
             datos.setRemitente_nombre(nombre);
-            
+
             InetAddress host = InetAddress.getLocalHost();
-            datos.setRemitente_ip(host.getHostAddress() );
+            datos.setRemitente_ip(host.getHostAddress());
             ObjectOutputStream paquete_datos = new ObjectOutputStream(misocket.getOutputStream());
             paquete_datos.writeObject(datos);
             misocket.close();
         } catch (Exception e2) {
             System.out.println(e2);
         }
-        */
     }//GEN-LAST:event_formWindowOpened
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -214,15 +204,15 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
             Socket miSocket = new Socket(host, puerto);
             int indice_chat = TabbedPane_para_chats.getSelectedIndex();
             InetAddress host = InetAddress.getLocalHost();
-            String remitente_nombre= nombre;
-            String remitente_ip=host.getHostName();
-            String destinatario_nombre = TabbedPane_para_chats.getTitleAt( indice_chat );
-            String destinatario_ip= buscar_ip_usuario(destinatario_nombre);
+            String remitente_nombre = nombre;
+            String remitente_ip = host.getHostName();
+            String destinatario_nombre = TabbedPane_para_chats.getTitleAt(indice_chat);
+            String destinatario_ip = buscar_ip_usuario(destinatario_nombre);
             PaqueteEnvio datos = new PaqueteEnvio(txt_mensaje.getText().trim(), remitente_nombre, remitente_ip, destinatario_nombre, destinatario_ip);
             ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream());
             paquete_datos.writeObject(datos);
             paquete_datos.close();
-            
+
             textAreas[indice_chat].append(nombre + ": " + txt_mensaje.getText() + "\n");
 
         } catch (UnknownHostException ex) {
@@ -232,7 +222,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    public void generar_clientes(String nombre_destinatario ){
+    public void generar_clientes(String nombre_destinatario) {
         if (contador_panel < max_chats) {
             textAreas[contador_panel] = new JTextArea();
 
@@ -242,11 +232,11 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
             TabbedPane_para_chats.addTab(nombre_destinatario, scrollPane);
 
             contador_panel++;
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "No hay mas espacios para chats :/", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     /**
      * @param args the command line arguments
      */
@@ -292,16 +282,16 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                 cliente = servidor_cliente.accept();
                 ObjectInputStream flujo_entrada = new ObjectInputStream(cliente.getInputStream());
                 paqueteRecibido = (PaqueteEnvio) flujo_entrada.readObject();
-                if (! paqueteRecibido.getMensaje().equals("Online")) {
-                    int i = buscar_tab_usuario( paqueteRecibido.getRemitente_nombre() );
-                    textAreas[i].append(paqueteRecibido.getRemitente_nombre()+ ": " + paqueteRecibido.getMensaje() + "\n");
-                }else{
+                if (!paqueteRecibido.getMensaje().equals("Online")) {
+                    int i = buscar_tab_usuario(paqueteRecibido.getRemitente_nombre());
+                    textAreas[i].append(paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje() + "\n");
+                } else {
                     // campo_chat.append(paqueteRecibido.getIps()+"\n");
                     HashMap<String, String> IPsMenu = paqueteRecibido.getIps();
                     Ips = paqueteRecibido.getIps();
                     //cb_clientes.removeAll();
                     for (String clave : IPsMenu.values()) {
-                       //System.out.println(clave);
+                        //System.out.println(clave);
                         generar_clientes(clave);
                     }
                 }
