@@ -174,13 +174,6 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         return indice;
     }
 
-    public void limpiar_tab() {
-        for (Map.Entry<String, String> entry : Ips.entrySet()) {
-        }
-
-        int indice = TabbedPane_para_chats.indexOfTab(nombre);
-        TabbedPane_para_chats.removeTabAt(indice);
-    }
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
@@ -225,14 +218,19 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
 
     public void generar_clientes(String nombre_destinatario) {
         if (contador_panel < max_chats) {
-            textAreas[contador_panel] = new JTextArea();
+            for (int i = 0; i < TabbedPane_para_chats.getTabCount(); i++) {
+                if (TabbedPane_para_chats.getTitleAt(i).equals(nombre_destinatario)) {
+                    System.out.println("ya existe " + nombre_destinatario);
+                } else {
+                    textAreas[contador_panel] = new JTextArea();
+                    // Agregamos cada JTextArea al JTabbedPane con un identificador y un título
+                    JTextArea textArea = textAreas[contador_panel];
+                    JScrollPane scrollPane = new JScrollPane(textArea);
+                    TabbedPane_para_chats.addTab(nombre_destinatario, scrollPane);
 
-            // Agregamos cada JTextArea al JTabbedPane con un identificador y un título
-            JTextArea textArea = textAreas[contador_panel];
-            JScrollPane scrollPane = new JScrollPane(textArea);
-            TabbedPane_para_chats.addTab(nombre_destinatario, scrollPane);
-
-            contador_panel++;
+                    contador_panel++;
+                }
+            }
         } else {
             JOptionPane.showMessageDialog(null, "No hay mas espacios para chats :/", "Error", JOptionPane.ERROR_MESSAGE);
         }
