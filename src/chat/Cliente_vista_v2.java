@@ -218,19 +218,13 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
 
     public void generar_clientes(String nombre_destinatario) {
         if (contador_panel < max_chats) {
-            for (int i = 0; i < TabbedPane_para_chats.getTabCount(); i++) {
-                if (TabbedPane_para_chats.getTitleAt(i).equals(nombre_destinatario)) {
-                    System.out.println("ya existe " + nombre_destinatario);
-                } else {
-                    textAreas[contador_panel] = new JTextArea();
-                    // Agregamos cada JTextArea al JTabbedPane con un identificador y un título
-                    JTextArea textArea = textAreas[contador_panel];
-                    JScrollPane scrollPane = new JScrollPane(textArea);
-                    TabbedPane_para_chats.addTab(nombre_destinatario, scrollPane);
+            textAreas[contador_panel] = new JTextArea();
+            // Agregamos cada JTextArea al JTabbedPane con un identificador y un título
+            JTextArea textArea = textAreas[contador_panel];
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            TabbedPane_para_chats.addTab(nombre_destinatario, scrollPane);
 
-                    contador_panel++;
-                }
-            }
+            contador_panel++;
         } else {
             JOptionPane.showMessageDialog(null, "No hay mas espacios para chats :/", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -291,7 +285,22 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                     //cb_clientes.removeAll();
                     for (String clave : IPsMenu.values()) {
                         //System.out.println(clave);
-                        generar_clientes(clave);
+                        // si hay espacion y ya hay chats
+                        if (TabbedPane_para_chats.getTabCount() == 0) { // si NO es el primer chat
+                            generar_clientes(nombre);
+                        } else {
+                            //verificar que ya existe
+                            //recorriendo todos los tabs
+                            for (int i = 0; i < TabbedPane_para_chats.getTabCount(); i++) {
+                                String titulo = TabbedPane_para_chats.getTitleAt(i);
+                                System.out.println("tit " + titulo);
+                                if (titulo.equals(nombre)) {
+                                    // no agregar
+                                } else {
+                                    generar_clientes(nombre);
+                                }
+                            }
+                        }
                     }
                 }
             }
