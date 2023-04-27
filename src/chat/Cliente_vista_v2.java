@@ -2,15 +2,19 @@ package chat;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -58,6 +62,11 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         jl_nombre.setText("Cliente: " + nombre);
         Thread hilo = new Thread(this);
         hilo.start();
+        generar_clientes("x");
+        generar_clientes("d");
+        generar_clientes("c");
+        generar_clientes("y");
+        //limpiar_tab();
     }
 
     /**
@@ -74,6 +83,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         jl_reloj = new javax.swing.JLabel();
         separador = new javax.swing.JSeparator();
         TabbedPane_para_chats = new javax.swing.JTabbedPane();
+        txt_mensaje = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -92,7 +102,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         jl_reloj.setFont(new java.awt.Font("Dialog", 2, 18)); // NOI18N
         jl_reloj.setText("hora");
 
-        jButton1.setText("agregar");
+        jButton1.setText("Enviar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -109,22 +119,21 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                 .addContainerGap(195, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jl_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jl_reloj, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(separador)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton1)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(TabbedPane_para_chats, javax.swing.GroupLayout.PREFERRED_SIZE, 385, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(10, 10, 10)))))
-                .addGap(12, 12, 12))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jl_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jl_reloj, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(txt_mensaje, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(separador, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(TabbedPane_para_chats, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGap(12, 12, 12))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -140,7 +149,9 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                 .addGap(18, 18, 18)
                 .addComponent(separador, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txt_mensaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1))
                 .addGap(24, 24, 24))
         );
 
@@ -158,9 +169,23 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         }
         return clave;
     }
+    public int buscar_indice_usuario(String nombre){
+        
+        return 1;
+    }
+    
+    
+    public void limpiar_tab(){
+        for (Map.Entry<String, String> entry : Ips.entrySet()) {
+        }
+        
+        
+        int indice = TabbedPane_para_chats.indexOfTab(nombre);
+        TabbedPane_para_chats.removeTabAt(indice);
+    }
     
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        
+        /*
         try {
             Socket misocket = new Socket(host, puerto);
             PaqueteEnvio datos = new PaqueteEnvio();
@@ -175,31 +200,32 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         } catch (Exception e2) {
             System.out.println(e2);
         }
+        */
     }//GEN-LAST:event_formWindowOpened
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try {
-            ServerSocket servidor_cliente = new ServerSocket(puerto2);
-            Socket cliente;
-            PaqueteEnvio paqueteRecibido;
-            while (true) {
-                cliente = servidor_cliente.accept();
-                ObjectInputStream flujo_entrada = new ObjectInputStream(cliente.getInputStream());
-                paqueteRecibido = (PaqueteEnvio) flujo_entrada.readObject();
-                if (paqueteRecibido.getMensaje().equals("Online")) {
-                    // añadir textArea 
-                    HashMap<String, String> IPsMenu = paqueteRecibido.getIps();
-                    Ips = paqueteRecibido.getIps();
-                    for (String clave : IPsMenu.values()) {
-                       generar_clientes(clave);
-                    }
-                }else{
-                    System.out.println(paqueteRecibido.getRemitente_nombre()+ ": " + paqueteRecibido.getMensaje() + "\n");
-                }
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+        int indice_chat = TabbedPane_para_chats.getSelectedIndex();
+        textAreas[indice_chat].append(nombre + ": " + txt_mensaje.getText() + "\n");
+        /*try {
+            Socket miSocket = new Socket(host, puerto);
+            int indice_chat = TabbedPane_para_chats.getSelectedIndex();
+            InetAddress host = InetAddress.getLocalHost();
+            String remitente_nombre= nombre;
+            String remitente_ip=host.getHostName();
+            String destinatario_nombre = TabbedPane_para_chats.getTitleAt( indice_chat );
+            String destinatario_ip= buscar_usuario(destinatario_nombre);
+            PaqueteEnvio datos = new PaqueteEnvio(txt_mensaje.getText().trim(), remitente_nombre, remitente_ip, destinatario_nombre, destinatario_ip);
+            ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream());
+            paquete_datos.writeObject(datos);
+            paquete_datos.close();
+            
+            textAreas[indice_chat].append(nombre + ": " + txt_mensaje.getText() + "\n");
+
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(Cliente_vista.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Cliente_vista.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
     }//GEN-LAST:event_jButton1ActionPerformed
 
     public void generar_clientes(String nombre_destinatario ){
@@ -288,5 +314,6 @@ System.out.println(paqueteRecibido.getRemitente_nombre()+ ": " + paqueteRecibido
     private javax.swing.JLabel jl_nombre;
     private javax.swing.JLabel jl_reloj;
     private javax.swing.JSeparator separador;
+    private javax.swing.JTextField txt_mensaje;
     // End of variables declaration//GEN-END:variables
 }
