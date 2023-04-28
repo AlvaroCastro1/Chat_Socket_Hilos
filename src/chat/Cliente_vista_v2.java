@@ -300,9 +300,6 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     public void generar_clientes(String nombre_destinatario) {
-        Ips.put("1", "c1");
-        Ips.put("2", "c2");
-        Ips.put("3", "c3");
         if (contador_panel < max_chats) {
             textAreas[contador_panel] = new JTextArea();
             // Agregamos cada JTextArea al JTabbedPane con un identificador y un título
