@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -34,8 +35,11 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
     HashMap<String, String> Ips;
     int contador_panel = 0;
     int max_chats = 5;
-    private JTextArea[] textAreas = new JTextArea[max_chats];
+    private final JTextArea[] textAreas = new JTextArea[max_chats];
     private Timer timer;
+    HashMap<String, String> Ips_grupo = new HashMap<>();
+
+    PaqueteEnvio[] chats_grupal = new PaqueteEnvio[3];
 
     public void reloj() {
         timer = new Timer(1000, new ActionListener() {
@@ -61,7 +65,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         jl_nombre.setText("Cliente: " + nombre);
         Thread hilo = new Thread(this);
         hilo.start();
-        //limpiar_tab();
+        //limpiar_tab();        
     }
 
     /**
@@ -106,6 +110,11 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         });
 
         jButton2.setText("Grupal");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -228,7 +237,72 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        JCheckBox[] check_cli = new JCheckBox[Ips.size()];
+        HashMap<String, String> Ips_grupo = new HashMap<>();
+        int i = 0;
+        for (Map.Entry<String, String> entry : Ips.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            check_cli[i] = new JCheckBox(value);
+            i++;
+        }
+        int respuesta = JOptionPane.showConfirmDialog(null, check_cli, "Selecciona los checkboxes", JOptionPane.OK_CANCEL_OPTION);
+        if (respuesta == JOptionPane.OK_OPTION) {
+            for (int j = 0; j < check_cli.length; j++) {
+                if (check_cli[j].isSelected()) {
+                    Ips_grupo.put(buscar_ip_usuario(check_cli[j].getText()), check_cli[j].getText());
+                }
+            }
+        }
+
+        PaqueteEnvio chat_grupal = new PaqueteEnvio();
+
+        textAreas[contador_panel] = new JTextArea();
+        // Agregamos cada JTextArea al JTabbedPane con un identificador y un título
+        JTextArea textArea = textAreas[contador_panel];
+        JScrollPane scrollPane = new JScrollPane(textArea);
+
+        TabbedPane_para_chats.addTab("Chat Grupal", scrollPane);
+        String cad = "Chat grupal entre\n";
+        for (Map.Entry<String, String> entry : Ips_grupo.entrySet()) {
+            cad += entry.getKey() + " -----> " + entry.getValue();
+        }
+        textArea.append(cad);
+        chat_grupal.setIps_grupo(Ips_grupo);
+        chat_grupal.setArea_chat_grupo(textArea);
+        chat_grupal.setEsGrupal(true);
+        chat_grupal.setMensaje("creó un nuevo Chat Grupal");
+
+        try {
+            Socket miSocket = new Socket(host, puerto);
+            InetAddress host = InetAddress.getLocalHost();
+            String remitente_nombre = nombre;
+            String remitente_ip = host.getHostName();
+            chat_grupal.setRemitente_ip(remitente_ip);
+            chat_grupal.setRemitente_nombre(remitente_nombre);
+
+            ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream());
+            paquete_datos.writeObject(chat_grupal);
+            paquete_datos.close();
+
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(Cliente_vista.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Cliente_vista.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println(chat_grupal);
+        /* imprimir los clientes del grupo
+        for (Map.Entry<String, String> entry : Ips_grupo.entrySet()) {
+            System.out.println("Clave: " + entry.getKey() + ", Valor: " + entry.getValue());
+        }*/
+
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     public void generar_clientes(String nombre_destinatario) {
+        Ips.put("1", "c1");
+        Ips.put("2", "c2");
+        Ips.put("3", "c3");
         if (contador_panel < max_chats) {
             textAreas[contador_panel] = new JTextArea();
             // Agregamos cada JTextArea al JTabbedPane con un identificador y un título
@@ -287,16 +361,24 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                 cliente = servidor_cliente.accept();
                 ObjectInputStream flujo_entrada = new ObjectInputStream(cliente.getInputStream());
                 paqueteRecibido = (PaqueteEnvio) flujo_entrada.readObject();
-                if (!paqueteRecibido.getMensaje().equals("Online")) {
-                    int i = buscar_tab_usuario(paqueteRecibido.getRemitente_nombre());
-                    textAreas[i].append(paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje() + "\n");
+
+                if (paqueteRecibido.isGrupal()) {
+                    JTextArea area_nuevo_chat = paqueteRecibido.getArea_chat_grupo();
+                    JScrollPane scrollPane = new JScrollPane(area_nuevo_chat);
+                    TabbedPane_para_chats.addTab("Chat Grupal", scrollPane);
                 } else {
-                    // campo_chat.append(paqueteRecibido.getIps()+"\n");
-                    HashMap<String, String> IPsMenu = paqueteRecibido.getIps();
-                    Ips = paqueteRecibido.getIps();
-                    //cb_clientes.removeAll();
-                    for (String clave : IPsMenu.values()) {
-                        generar_clientes(nombre);
+
+                    if (!paqueteRecibido.getMensaje().equals("Online")) {
+                        int i = buscar_tab_usuario(paqueteRecibido.getRemitente_nombre());
+                        textAreas[i].append(paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje() + "\n");
+                    } else {
+                        // campo_chat.append(paqueteRecibido.getIps()+"\n");
+                        HashMap<String, String> IPsMenu = paqueteRecibido.getIps();
+                        Ips = paqueteRecibido.getIps();
+                        //cb_clientes.removeAll();
+                        for (String clave : IPsMenu.values()) {
+                            generar_clientes(nombre);
+                        }
                     }
                 }
             }

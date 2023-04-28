@@ -1,8 +1,8 @@
 package chat;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
+import javax.swing.JTextArea;
 
 /**
  *
@@ -73,5 +73,49 @@ public class PaqueteEnvio implements Serializable {
     public void setMensaje(String mensaje) {
         this.mensaje = mensaje;
     }
+    
+    
+    //chat grupal
+    
+    HashMap<String, String> Ips_grupo ;
+    private JTextArea area_chat_grupo;
+    private boolean Grupal;
 
+    public boolean isGrupal() {
+        return Grupal;
+    }
+
+    public void setEsGrupal(boolean esGrupal) {
+        this.Grupal = esGrupal;
+    }
+    
+    
+
+    public int getMax_chat() {
+        return 3;
+    }
+
+    public HashMap<String, String> getIps_grupo() {
+        return Ips_grupo;
+    }
+
+    public void setIps_grupo(HashMap<String, String> Ips_grupo) {
+        this.Ips_grupo = Ips_grupo;
+    }
+    
+
+    public JTextArea getArea_chat_grupo() {
+        return area_chat_grupo;
+    }
+
+    public void setArea_chat_grupo(JTextArea area_chat_grupo) {
+        this.area_chat_grupo = area_chat_grupo;
+    }
+
+    @Override
+    public String toString() {
+        return "PaqueteEnvio{" + "mensaje=" + mensaje + "\n remitente_nombre=" + remitente_nombre + "\n remitente_ip=" + remitente_ip + "\n destinatario_nombre=" + destinatario_nombre + "\n destinatario_ip=" + destinatario_ip + "\n Ips=" + Ips + "\n Ips_grupo=" + Ips_grupo + "\n area_chat_grupo=" + area_chat_grupo + "\n esGrupal=" + Grupal + '}';
+    }
+
+    
 }
