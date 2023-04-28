@@ -81,6 +81,16 @@ public class PaqueteEnvio implements Serializable {
     private JTextArea area_chat_grupo;
     private boolean Grupal;
 
+    public String getNombre_chat_grupal() {
+        return nombre_chat_grupal;
+    }
+
+    public void setNombre_chat_grupal(String nombre_chat_grupal) {
+        this.nombre_chat_grupal = nombre_chat_grupal;
+    }
+    private String nombre_chat_grupal;
+    
+
     public boolean isGrupal() {
         return Grupal;
     }
@@ -114,7 +124,7 @@ public class PaqueteEnvio implements Serializable {
 
     @Override
     public String toString() {
-        return "PaqueteEnvio{" + "mensaje=" + mensaje + "\n remitente_nombre=" + remitente_nombre + "\n remitente_ip=" + remitente_ip + "\n destinatario_nombre=" + destinatario_nombre + "\n destinatario_ip=" + destinatario_ip + "\n Ips=" + Ips + "\n Ips_grupo=" + Ips_grupo + "\n area_chat_grupo=" + area_chat_grupo + "\n esGrupal=" + Grupal + '}';
+        return "PaqueteEnvio{" + "mensaje=" + mensaje + "\n remitente_nombre=" + remitente_nombre + "\n remitente_ip=" + remitente_ip + "\n destinatario_nombre=" + destinatario_nombre + "\n destinatario_ip=" + destinatario_ip + "\n Ips=" + Ips + "\n Ips_grupo=" + Ips_grupo + "\n area_chat_grupo=" + area_chat_grupo + "\n esGrupal=" + Grupal + "\n nombreGrupal "+ nombre_chat_grupal+'}';
     }
 
     

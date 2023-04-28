@@ -139,6 +139,7 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                 mensaje = paquete_recibido.getMensaje();
 
                 if (paquete_recibido.isGrupal()) {
+
                     area_texto.append(remitente_nombre + " " + mensaje + "\n");
                     HashMap<String, String> temp_Destinatarios = paquete_recibido.getIps_grupo();
                     // enviamos a todos los usuarios del chat grupal
@@ -149,6 +150,7 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                         enviaDestinatario.close();
                         paqueteReenvio.close();
                         miSocket.close();
+
                     }
                 } else {
                     if (!mensaje.equals("Online")) {
