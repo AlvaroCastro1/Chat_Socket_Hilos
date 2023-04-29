@@ -349,22 +349,34 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     public void generar_clientes(String nombre_destinatario) {
-
-        for (int i = 0; i < TabbedPane_para_chats.getTabCount(); i++) {
-            String titulo_temp = TabbedPane_para_chats.getTitleAt(i);
-
-            if (titulo_temp.equals(nombre_destinatario)) {
-                System.out.println("ya existe, se omite el chat");
+        if (TabbedPane_para_chats.getTabCount() <= 0) {
+            if (contador_panel < max_chats) {
+                textAreas[contador_panel] = new JTextArea();
+                // Agregamos cada JTextArea al JTabbedPane con un identificador y un título
+                JTextArea textArea = textAreas[contador_panel];
+                JScrollPane scrollPane = new JScrollPane(textArea);
+                TabbedPane_para_chats.addTab(nombre_destinatario, scrollPane);
+                contador_panel++;
             } else {
-                if (contador_panel < max_chats) {
-                    textAreas[contador_panel] = new JTextArea();
-                    // Agregamos cada JTextArea al JTabbedPane con un identificador y un título
-                    JTextArea textArea = textAreas[contador_panel];
-                    JScrollPane scrollPane = new JScrollPane(textArea);
-                    TabbedPane_para_chats.addTab(nombre_destinatario, scrollPane);
-                    contador_panel++;
+                JOptionPane.showMessageDialog(null, "No hay mas espacios para chats :/", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            for (int i = 0; i < TabbedPane_para_chats.getTabCount(); i++) {
+                String titulo_temp = TabbedPane_para_chats.getTitleAt(i);
+
+                if (titulo_temp.equals(nombre_destinatario)) {
+                    System.out.println("ya existe, se omite el chat");
                 } else {
-                    JOptionPane.showMessageDialog(null, "No hay mas espacios para chats :/", "Error", JOptionPane.ERROR_MESSAGE);
+                    if (contador_panel < max_chats) {
+                        textAreas[contador_panel] = new JTextArea();
+                        // Agregamos cada JTextArea al JTabbedPane con un identificador y un título
+                        JTextArea textArea = textAreas[contador_panel];
+                        JScrollPane scrollPane = new JScrollPane(textArea);
+                        TabbedPane_para_chats.addTab(nombre_destinatario, scrollPane);
+                        contador_panel++;
+                    } else {
+                        JOptionPane.showMessageDialog(null, "No hay mas espacios para chats :/", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             }
         }
