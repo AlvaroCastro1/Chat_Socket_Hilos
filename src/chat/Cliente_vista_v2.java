@@ -360,7 +360,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
             contador_panel++;
             System.out.println("lo logré, fue el primero");
         } else {
-            for (int i = 0; i <= TabbedPane_para_chats.getTabCount(); i++) {
+            for (int i = 0; i < TabbedPane_para_chats.getTabCount(); i++) {
 
                 String titulo_temp = TabbedPane_para_chats.getTitleAt(i);
 
