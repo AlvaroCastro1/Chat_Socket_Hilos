@@ -285,8 +285,10 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         for (Map.Entry<String, String> entry : Ips.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
-            check_cli[i] = new JCheckBox(value);
-            i++;
+            if (!nombre.equals(value)) {
+                check_cli[i] = new JCheckBox(value);
+                i++;
+            }
         }
         // mostramos y guardamos en un int la respuesta ademas de un dicc con ip y nombres de miembros
         int respuesta = JOptionPane.showConfirmDialog(null, check_cli, "Selecciona los checkboxes", JOptionPane.OK_CANCEL_OPTION);
@@ -429,6 +431,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                 if (paqueteRecibido.isGrupal()) {
 
                     if (paqueteRecibido.getMensaje().contains("creó un nuevo Chat Grupal")) {
+                        chats_grupales++;
                         JTextArea area_nuevo_chat = paqueteRecibido.getArea_chat_grupo();
                         JScrollPane scrollPane = new JScrollPane(area_nuevo_chat);
                         TabbedPane_para_chats.addTab(paqueteRecibido.getNombre_chat_grupal(), scrollPane);
