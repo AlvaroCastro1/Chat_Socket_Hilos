@@ -228,15 +228,15 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                     }
                 }
             }
-            System.out.println("en el "+indice_para_impirmir);
-            System.out.println(textAreas[indice_para_impirmir].getText());
+            System.out.println("en el " + indice_para_impirmir);
+            //System.out.println(textAreas[indice_para_impirmir].getText());
             // recorre todos los chat grup hasta encontrarlo
             for (Map.Entry<String, PaqueteEnvio> entry : grupos.entrySet()) {
                 String titulo = entry.getKey();
                 PaqueteEnvio obj = entry.getValue();
                 // si el titulo de la iteracion actual es en el que esta posicionado es el que vamos a enviarlo
+                System.out.println(TabbedPane_para_chats.getTitleAt(indice_actual) + " es igual a " + titulo);
                 if (TabbedPane_para_chats.getTitleAt(indice_actual).equals(titulo)) {
-
                     try {
                         Socket miSocket = new Socket(host, puerto);
                         InetAddress host = InetAddress.getLocalHost();
@@ -314,6 +314,16 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                     // buscas la ip de ese usuario y lo añades junto con el nombre
                     Ips_grupo.put(buscar_ip_usuario(check_cli1.getText()), check_cli1.getText());
                 }
+            }
+            InetAddress host;
+            try {
+                //auto_agragarse
+                host = InetAddress.getLocalHost();
+                String mi_nombre = nombre;
+                String mi_ip = host.getHostName();
+                Ips_grupo.put(mi_ip, mi_nombre);
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(Cliente_vista_v2.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -446,20 +456,37 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
 
                 if (paqueteRecibido.isGrupal()) {
                     System.out.println("mensaje grupal recibido");
-                    System.out.println("\n" +paqueteRecibido.getMensaje()+"\n");
+                    System.out.println("\n" + paqueteRecibido.getMensaje() + "\n");
                     if (paqueteRecibido.getMensaje().contains("creó un nuevo Chat Grupal")) {
                         JTextArea area_nuevo_chat = paqueteRecibido.getArea_chat_grupo();
                         JScrollPane scrollPane = new JScrollPane(area_nuevo_chat);
                         TabbedPane_para_chats.addTab(paqueteRecibido.getNombre_chat_grupal(), scrollPane);
-                        textAreas[textAreas.length] = area_nuevo_chat;
-                    } else {
-                        for (int i = 0; i < TabbedPane_para_chats.getComponentCount(); i++) {
-                            if (paqueteRecibido.getNombre_chat_grupal().equals(TabbedPane_para_chats.getTitleAt(i))) {
-                                textAreas[i].append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje());
+                        for (int i = 0; i < textAreas.length; i++) {
+                            if (textAreas[i] == null) {
+                                textAreas[i] = area_nuevo_chat;
+                                break;
                             }
-                            //JTextArea area_del_chat = buscar_chat("paqueteRecibido.getNombre_chat_grupal()");
-                            //area_del_chat.append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje());
                         }
+                        grupos.put(paqueteRecibido.getNombre_chat_grupal(), paqueteRecibido);
+                        HashMap<String, String> epa = paqueteRecibido.getIps_grupo();
+                        System.out.println("-------------------------------------------------------");
+                        for (String nombre : epa.values()) {
+                            System.out.println((nombre));
+                        }
+                        System.out.println("-------------------------------------------------------1212");
+                    } else {
+
+                        int indice_para_impirmir = 0;
+                        for (int i = 0; i < textAreas.length; i++) {
+                            if (textAreas[i] != null) {
+                                if (textAreas[i].getText().contains(paqueteRecibido.getNombre_chat_grupal())) {
+                                    indice_para_impirmir = i;
+                                }
+                            }
+                        }
+                        textAreas[indice_para_impirmir].append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje());
+                        //JTextArea area_del_chat = buscar_chat("paqueteRecibido.getNombre_chat_grupal()");
+                        //area_del_chat.append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje());
                     }
 
                 } else {

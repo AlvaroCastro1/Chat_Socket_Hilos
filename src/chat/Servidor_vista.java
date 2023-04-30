@@ -140,7 +140,7 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
 
                 if (paquete_recibido.isGrupal()) {
 
-                    area_texto.append(remitente_nombre + " " + mensaje + "\n");
+                    area_texto.append(remitente_nombre + ": " + mensaje + " PARA GRUPOGrupo\n");
                     HashMap<String, String> temp_Destinatarios = paquete_recibido.getIps_grupo();
                     // enviamos a todos los usuarios del chat grupal
                     for (Map.Entry<String, String> entry : temp_Destinatarios.entrySet()) {
