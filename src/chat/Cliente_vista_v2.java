@@ -219,6 +219,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         int indice_actual = TabbedPane_para_chats.getSelectedIndex();
         // si es un chat grupal
         if (TabbedPane_para_chats.getTitleAt(indice_actual).contains("Chat grupal")) {
+            System.out.println("es grupal");
             int indice_para_impirmir = 0;
             for (int i = 0; i < textAreas.length; i++) {
                 if (textAreas[i] != null) {
@@ -227,6 +228,8 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                     }
                 }
             }
+            System.out.println("en el "+indice_para_impirmir);
+            System.out.println(textAreas[indice_para_impirmir].getText());
             // recorre todos los chat grup hasta encontrarlo
             for (Map.Entry<String, PaqueteEnvio> entry : grupos.entrySet()) {
                 String titulo = entry.getKey();
@@ -251,7 +254,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                         paquete_datos.writeObject(datos);
                         paquete_datos.close();
 
-                        textAreas[indice_actual].append(nombre + ": " + txt_mensaje.getText() + "\n");
+                        textAreas[indice_para_impirmir].append(nombre + ": " + txt_mensaje.getText() + "\n");
 
                     } catch (UnknownHostException ex) {
                         Logger.getLogger(Cliente_vista.class.getName()).log(Level.SEVERE, null, ex);
