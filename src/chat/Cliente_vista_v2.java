@@ -448,15 +448,15 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                     System.out.println("mensaje grupal recibido");
 
                     if (paqueteRecibido.getMensaje().contains("creó un nuevo Chat Grupal")) {
-                        chats_grupales++;
                         JTextArea area_nuevo_chat = paqueteRecibido.getArea_chat_grupo();
                         JScrollPane scrollPane = new JScrollPane(area_nuevo_chat);
                         TabbedPane_para_chats.addTab(paqueteRecibido.getNombre_chat_grupal(), scrollPane);
                         textAreas[textAreas.length + 1] = area_nuevo_chat;
-                        contador_panel++;
                     } else {
                         for (int i = 0; i < TabbedPane_para_chats.getComponentCount(); i++) {
-                            textAreas[i].append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje());
+                            if (paqueteRecibido.getMensaje().equals(TabbedPane_para_chats.getTitleAt(i))) {
+                                textAreas[i].append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje());
+                            }
                             //JTextArea area_del_chat = buscar_chat("paqueteRecibido.getNombre_chat_grupal()");
                             //area_del_chat.append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje());
                         }
