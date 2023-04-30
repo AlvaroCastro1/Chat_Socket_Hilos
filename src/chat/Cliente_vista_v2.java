@@ -2,6 +2,7 @@ package chat;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -102,6 +103,12 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
 
         jl_reloj.setFont(new java.awt.Font("Dialog", 2, 18)); // NOI18N
         jl_reloj.setText("hora");
+
+        txt_mensaje.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_mensajeKeyTyped(evt);
+            }
+        });
 
         jButton1.setText("Enviar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -216,6 +223,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_formWindowOpened
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        
         int indice_actual = TabbedPane_para_chats.getSelectedIndex();
         // si es un chat grupal
         if (TabbedPane_para_chats.getTitleAt(indice_actual).contains("Chat grupal")) {
@@ -289,7 +297,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
 
         }
 
-
+        txt_mensaje.setText("");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -366,6 +374,13 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         }*/
 
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void txt_mensajeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_mensajeKeyTyped
+        char tecla_press = evt.getKeyChar();
+        if (tecla_press== KeyEvent.VK_ENTER) {
+            jButton1ActionPerformed(null);
+        }
+    }//GEN-LAST:event_txt_mensajeKeyTyped
 
     public void generar_clientes(String nombre_destinatario) {
         System.out.println("voy intentar agregar a " + nombre_destinatario);
