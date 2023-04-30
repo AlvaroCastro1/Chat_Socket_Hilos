@@ -278,7 +278,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         String titulo_grupal = "Chat Grupal " + (chats_grupales + 1);
-        JCheckBox[] check_cli = new JCheckBox[Ips.size()];
+        JCheckBox[] check_cli = new JCheckBox[Ips.size()-1];
         HashMap<String, String> Ips_grupo = new HashMap<>();
         //generamos un JOpane con checks para seleccionar a los clientes por agregar
         int i = 0;
@@ -435,11 +435,12 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                         JTextArea area_nuevo_chat = paqueteRecibido.getArea_chat_grupo();
                         JScrollPane scrollPane = new JScrollPane(area_nuevo_chat);
                         TabbedPane_para_chats.addTab(paqueteRecibido.getNombre_chat_grupal(), scrollPane);
+                        textAreas[textAreas.length + 1] = area_nuevo_chat;
                     } else {
                         for (int i = 0; i < TabbedPane_para_chats.getComponentCount(); i++) {
-                            if (paqueteRecibido.getNombre_chat_grupal().equals(TabbedPane_para_chats.getTitleAt(i))) {
-                                textAreas[i].append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje());
-                            }
+                                //textAreas[i].append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje());
+                                JTextArea area_del_chat = buscar_chat("paqueteRecibido.getNombre_chat_grupal()");
+                                area_del_chat.append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje());
                         }
                     }
 
@@ -463,7 +464,15 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
             System.out.println(e);
         }
     }
-
+    
+    public JTextArea buscar_chat(String nombre_chat){
+        for (int i = 0; i < TabbedPane_para_chats.getTabCount(); i++) {
+            if (nombre_chat.equals(TabbedPane_para_chats.getTitleAt(i))) {
+                return (JTextArea) TabbedPane_para_chats.getComponentAt(i);
+            }
+        }
+        return null;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTabbedPane TabbedPane_para_chats;
