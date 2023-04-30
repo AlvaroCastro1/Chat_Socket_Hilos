@@ -281,40 +281,39 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        String titulo_grupal = "Chat Grupal " + (chats_grupales + 1);
+        //genarmos un arreglode los posibles contacto sin incluir a este usuario
         JCheckBox[] check_cli = new JCheckBox[Ips.size()-1];
         HashMap<String, String> Ips_grupo = new HashMap<>();
         //generamos un JOpane con checks para seleccionar a los clientes por agregar
         int i = 0;
         for (Map.Entry<String, String> entry : Ips.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-            if (!nombre.equals(value)) {
-                check_cli[i] = new JCheckBox(value);
+            String ip_t = entry.getKey();
+            String nombre_t = entry.getValue();
+            if (!nombre_t.equals(nombre)) {
+                check_cli[i] = new JCheckBox(nombre_t);
                 i++;
             }
         }
         // mostramos y guardamos en un int la respuesta ademas de un dicc con ip y nombres de miembros
         int respuesta = JOptionPane.showConfirmDialog(null, check_cli, "Selecciona los checkboxes", JOptionPane.OK_CANCEL_OPTION);
         if (respuesta == JOptionPane.OK_OPTION) {
-            for (int j = 0; j < check_cli.length; j++) {
-                if (check_cli[j].isSelected()) {
-                    Ips_grupo.put(buscar_ip_usuario(check_cli[j].getText()), check_cli[j].getText());
+            for (JCheckBox check_cli1 : check_cli) {
+                if (check_cli1.isSelected()) {
+                    // buscas la ip de ese usuario y lo añades junto con el nombre
+                    Ips_grupo.put( buscar_ip_usuario(check_cli1.getText()) , check_cli1.getText() );
                 }
             }
         }
 
         // un paquete inicial de este grupo
         PaqueteEnvio chat_grupal = new PaqueteEnvio();
-        // se agrega el panel del caht grupal a el arreglo
-        textAreas[contador_panel] = new JTextArea();
+        // se agrega el panel del chat grupal a el arreglo de todos los chats
+        textAreas[textAreas.length - 1] = new JTextArea();
         // Agregamos cada JTextArea al JTabbedPane con un identificador y un título
-        JTextArea textArea = textAreas[contador_panel];
+        JTextArea textArea = textAreas[textAreas.length - 1];
         JScrollPane scrollPane = new JScrollPane(textArea);
-        //añadir count chat +1
-        chats_grupales++;
         // mostrar pane
-        TabbedPane_para_chats.addTab(titulo_grupal, scrollPane);
+        TabbedPane_para_chats.addTab("Chat grupal" + textAreas.length, scrollPane);
         //_______________________mandar accion de chat nuevo
         String cad = "Chat grupal entre\n";
         for (Map.Entry<String, String> entry : Ips_grupo.entrySet()) {
@@ -325,7 +324,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         chat_grupal.setArea_chat_grupo(textArea);
         chat_grupal.setEsGrupal(true);
         chat_grupal.setMensaje("creó un nuevo Chat Grupal");
-        chat_grupal.setNombre_chat_grupal(titulo_grupal);
+        chat_grupal.setNombre_chat_grupal("Chat grupal" + textAreas.length);
 
         try {
             Socket miSocket = new Socket(host, puerto);
@@ -337,7 +336,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
 
             ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream());
             textArea.append(cad);
-            grupos.put(titulo_grupal, chat_grupal);
+            grupos.put("Chat grupal" + textAreas.length, chat_grupal);
 
             paquete_datos.writeObject(chat_grupal);
             paquete_datos.close();
@@ -459,10 +458,9 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                     } else {
                         // si el mensaje es Online quiere decir que se conecto un nuevo cliente
                         // campo_chat.append(paqueteRecibido.getIps()+"\n");
-                        HashMap<String, String> IPsMenu = paqueteRecibido.getIps();
                         Ips = paqueteRecibido.getIps();
                         //cb_clientes.removeAll();
-                        for (String nombre : IPsMenu.values()) {
+                        for (String nombre : Ips.values()) {
                             generar_clientes(nombre);
                         }
                     }
