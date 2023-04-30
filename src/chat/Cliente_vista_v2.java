@@ -301,19 +301,19 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         for (Map.Entry<String, String> entry : Ips.entrySet()) {
             String ip_t = entry.getKey();
             String nombre_t = entry.getValue();
-            if (!nombre_t.equals(nombre)) {
+            //if (!nombre_t.equals(nombre)) {
                 check_cli[i] = new JCheckBox(nombre_t);
                 i++;
-            }
+            //}
         }
         // mostramos y guardamos en un int la respuesta ademas de un dicc con ip y nombres de miembros
         int respuesta = JOptionPane.showConfirmDialog(null, check_cli, "Selecciona los checkboxes", JOptionPane.OK_CANCEL_OPTION);
         if (respuesta == JOptionPane.OK_OPTION) {
             for (JCheckBox check_cli1 : check_cli) {
-                //if (check_cli1.isSelected()) {
+                if (check_cli1.isSelected()) {
                     // buscas la ip de ese usuario y lo añades junto con el nombre
                     Ips_grupo.put(buscar_ip_usuario(check_cli1.getText()), check_cli1.getText());
-                //}
+                }
             }
         }
 
