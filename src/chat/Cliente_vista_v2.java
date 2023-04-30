@@ -235,7 +235,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                 String titulo = entry.getKey();
                 PaqueteEnvio obj = entry.getValue();
                 // si el titulo de la iteracion actual es en el que esta posicionado es el que vamos a enviarlo
-                System.out.println(TabbedPane_para_chats.getTitleAt(indice_actual) + " es igual a " + titulo);
+                System.out.println(TabbedPane_para_chats.getTitleAt(indice_actual)+" es igual a "+titulo );
                 if (TabbedPane_para_chats.getTitleAt(indice_actual).equals(titulo)) {
                     try {
                         Socket miSocket = new Socket(host, puerto);
@@ -310,20 +310,10 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         int respuesta = JOptionPane.showConfirmDialog(null, check_cli, "Selecciona los checkboxes", JOptionPane.OK_CANCEL_OPTION);
         if (respuesta == JOptionPane.OK_OPTION) {
             for (JCheckBox check_cli1 : check_cli) {
-                if (check_cli1.isSelected()) {
+                //if (check_cli1.isSelected()) {
                     // buscas la ip de ese usuario y lo añades junto con el nombre
                     Ips_grupo.put(buscar_ip_usuario(check_cli1.getText()), check_cli1.getText());
-                }
-            }
-            InetAddress host;
-            try {
-                //auto_agragarse
-                host = InetAddress.getLocalHost();
-                String mi_nombre = nombre;
-                String mi_ip = host.getHostName();
-                Ips_grupo.put(mi_ip, mi_nombre);
-            } catch (UnknownHostException ex) {
-                Logger.getLogger(Cliente_vista_v2.class.getName()).log(Level.SEVERE, null, ex);
+                //}
             }
         }
 
@@ -335,7 +325,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         JTextArea textArea = textAreas[textAreas.length - 1];
         JScrollPane scrollPane = new JScrollPane(textArea);
         // mostrar pane
-        TabbedPane_para_chats.addTab("Chat grupal" + textAreas.length, scrollPane);
+        //TabbedPane_para_chats.addTab("Chat grupal" + textAreas.length, scrollPane);
         //_______________________mandar accion de chat nuevo
         String cad = "Chat grupal" + textAreas.length + "entre\n";
         for (Map.Entry<String, String> entry : Ips_grupo.entrySet()) {
@@ -468,7 +458,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                             }
                         }
                         grupos.put(paqueteRecibido.getNombre_chat_grupal(), paqueteRecibido);
-                        HashMap<String, String> epa = paqueteRecibido.getIps_grupo();
+                        HashMap<String, String> epa= paqueteRecibido.getIps_grupo();
                         System.out.println("-------------------------------------------------------");
                         for (String nombre : epa.values()) {
                             System.out.println((nombre));
