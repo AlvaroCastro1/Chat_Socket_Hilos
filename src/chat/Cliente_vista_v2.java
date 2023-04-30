@@ -470,12 +470,13 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                         int indice_para_impirmir = 0;
                         for (int i = 0; i < textAreas.length; i++) {
                             if (textAreas[i] != null) {
+                                System.out.println(textAreas[i].getText() + " es igual el titulo "+paqueteRecibido.getNombre_chat_grupal());
                                 if (textAreas[i].getText().contains(paqueteRecibido.getNombre_chat_grupal())) {
                                     indice_para_impirmir = i;
+                                    textAreas[indice_para_impirmir].append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje()+"\n");
                                 }
                             }
                         }
-                        textAreas[indice_para_impirmir].append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje());
                         //JTextArea area_del_chat = buscar_chat("paqueteRecibido.getNombre_chat_grupal()");
                         //area_del_chat.append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje());
                     }
