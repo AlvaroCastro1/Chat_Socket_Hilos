@@ -220,9 +220,11 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         // si es un chat grupal
         if (TabbedPane_para_chats.getTitleAt(indice_actual).contains("Chat grupal")) {
             int indice_para_impirmir = 0;
-            for(int i = 0; i < textAreas.length; i++){
-                if (textAreas[i].getText().contains("Chat grupal") && textAreas[i] != null) {
-                    indice_para_impirmir = i;
+            for (int i = 0; i < textAreas.length; i++) {
+                if (textAreas[i] != null) {
+                    if (textAreas[i].getText().contains("Chat grupal")) {
+                        indice_para_impirmir = i;
+                    }
                 }
             }
             // recorre todos los chat grup hasta encontrarlo
@@ -289,7 +291,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         //genarmos un arreglode los posibles contacto sin incluir a este usuario
-        JCheckBox[] check_cli = new JCheckBox[Ips.size()-1];
+        JCheckBox[] check_cli = new JCheckBox[Ips.size() - 1];
         HashMap<String, String> Ips_grupo = new HashMap<>();
         //generamos un JOpane con checks para seleccionar a los clientes por agregar
         int i = 0;
@@ -307,7 +309,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
             for (JCheckBox check_cli1 : check_cli) {
                 if (check_cli1.isSelected()) {
                     // buscas la ip de ese usuario y lo añades junto con el nombre
-                    Ips_grupo.put( buscar_ip_usuario(check_cli1.getText()) , check_cli1.getText() );
+                    Ips_grupo.put(buscar_ip_usuario(check_cli1.getText()), check_cli1.getText());
                 }
             }
         }
@@ -322,11 +324,11 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         // mostrar pane
         TabbedPane_para_chats.addTab("Chat grupal" + textAreas.length, scrollPane);
         //_______________________mandar accion de chat nuevo
-        String cad = "Chat grupal" + textAreas.length +"entre\n";
+        String cad = "Chat grupal" + textAreas.length + "entre\n";
         for (Map.Entry<String, String> entry : Ips_grupo.entrySet()) {
             cad += entry.getKey() + " -----> " + entry.getValue();
         }
-        cad +="\n";
+        cad += "\n";
         chat_grupal.setIps_grupo(Ips_grupo);
         chat_grupal.setArea_chat_grupo(textArea);
         chat_grupal.setEsGrupal(true);
@@ -362,7 +364,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     public void generar_clientes(String nombre_destinatario) {
-        System.out.println("voy intentar agregar a "+nombre_destinatario);
+        System.out.println("voy intentar agregar a " + nombre_destinatario);
 
         if (TabbedPane_para_chats.getTabCount() <= 0) {
             textAreas[contador_panel] = new JTextArea();
@@ -451,9 +453,9 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                         contador_panel++;
                     } else {
                         for (int i = 0; i < TabbedPane_para_chats.getComponentCount(); i++) {
-                                textAreas[i].append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje());
-                                //JTextArea area_del_chat = buscar_chat("paqueteRecibido.getNombre_chat_grupal()");
-                                //area_del_chat.append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje());
+                            textAreas[i].append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje());
+                            //JTextArea area_del_chat = buscar_chat("paqueteRecibido.getNombre_chat_grupal()");
+                            //area_del_chat.append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje());
                         }
                     }
 
@@ -477,8 +479,8 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
             System.out.println(e);
         }
     }
-    
-    public JTextArea buscar_chat(String nombre_chat){
+
+    public JTextArea buscar_chat(String nombre_chat) {
         for (int i = 0; i < TabbedPane_para_chats.getTabCount(); i++) {
             if (nombre_chat.equals(TabbedPane_para_chats.getTitleAt(i))) {
                 return (JTextArea) TabbedPane_para_chats.getComponentAt(i);
