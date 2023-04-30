@@ -219,6 +219,12 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         int indice_actual = TabbedPane_para_chats.getSelectedIndex();
         // si es un chat grupal
         if (TabbedPane_para_chats.getTitleAt(indice_actual).contains("Chat grupal")) {
+            int indice_para_impirmir = 0;
+            for(int i = 0; i < textAreas.length; i++){
+                if (textAreas[i].getText().contains("Chat grupal") && textAreas[i] != null) {
+                    indice_para_impirmir = i;
+                }
+            }
             // recorre todos los chat grup hasta encontrarlo
             for (Map.Entry<String, PaqueteEnvio> entry : grupos.entrySet()) {
                 String titulo = entry.getKey();
@@ -316,7 +322,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         // mostrar pane
         TabbedPane_para_chats.addTab("Chat grupal" + textAreas.length, scrollPane);
         //_______________________mandar accion de chat nuevo
-        String cad = "Chat grupal entre\n";
+        String cad = "Chat grupal" + textAreas.length +"entre\n";
         for (Map.Entry<String, String> entry : Ips_grupo.entrySet()) {
             cad += entry.getKey() + " -----> " + entry.getValue();
         }
