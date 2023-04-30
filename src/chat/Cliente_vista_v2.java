@@ -29,8 +29,8 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
 
     private final int puerto = 5000;
     private final int puerto2 = 9090;
-    //private final String host = "192.168.1.100";
-    private final String host = "localhost";
+    private final String host = "192.168.1.100";
+    //private final String host = "localhost";
     private String nombre = "";
     HashMap<String, String> Ips;
     int contador_panel = 0;
@@ -439,9 +439,9 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                         contador_panel++;
                     } else {
                         for (int i = 0; i < TabbedPane_para_chats.getComponentCount(); i++) {
-                                //textAreas[i].append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje());
-                                JTextArea area_del_chat = buscar_chat("paqueteRecibido.getNombre_chat_grupal()");
-                                area_del_chat.append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje());
+                                textAreas[i].append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje());
+                                //JTextArea area_del_chat = buscar_chat("paqueteRecibido.getNombre_chat_grupal()");
+                                //area_del_chat.append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje());
                         }
                     }
 
