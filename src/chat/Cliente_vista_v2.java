@@ -217,10 +217,13 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         int indice_actual = TabbedPane_para_chats.getSelectedIndex();
+        // si es un chat grupal
         if (TabbedPane_para_chats.getTitleAt(indice_actual).contains("Chat Grupal ")) {
+            // recorre todos los chat grup hasta encontrarlo
             for (Map.Entry<String, PaqueteEnvio> entry : grupos.entrySet()) {
                 String titulo = entry.getKey();
                 PaqueteEnvio obj = entry.getValue();
+                // si el titulo de la iteracion actual es en el que esta posicionado es el que vamos a enviarlo
                 if (TabbedPane_para_chats.getTitleAt(indice_actual).equals(titulo)) {
 
                     try {
@@ -233,6 +236,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                         datos.setMensaje(txt_mensaje.getText().trim());
                         datos.setRemitente_nombre(remitente_nombre);
                         datos.setRemitente_ip(remitente_ip);
+                        datos.setEsGrupal(true);
 
                         ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream());
                         paquete_datos.writeObject(datos);
@@ -316,6 +320,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
         for (Map.Entry<String, String> entry : Ips_grupo.entrySet()) {
             cad += entry.getKey() + " -----> " + entry.getValue();
         }
+        cad +="\n";
         chat_grupal.setIps_grupo(Ips_grupo);
         chat_grupal.setArea_chat_grupo(textArea);
         chat_grupal.setEsGrupal(true);
@@ -429,6 +434,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                 paqueteRecibido = (PaqueteEnvio) flujo_entrada.readObject();
 
                 if (paqueteRecibido.isGrupal()) {
+                    System.out.println("mensaje grupal recibido");
 
                     if (paqueteRecibido.getMensaje().contains("creó un nuevo Chat Grupal")) {
                         chats_grupales++;
