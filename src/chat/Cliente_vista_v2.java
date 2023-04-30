@@ -447,7 +447,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
 
                 if (paqueteRecibido.isGrupal()) {
                     System.out.println("mensaje grupal recibido");
-                    System.out.println("\n" + paqueteRecibido.getMensaje() + "\n");
+                    System.out.println("\n"+paqueteRecibido.getRemitente_nombre()+": " + paqueteRecibido.getMensaje() + "\n");
                     if (paqueteRecibido.getMensaje().contains("creó un nuevo Chat Grupal")) {
                         JTextArea area_nuevo_chat = paqueteRecibido.getArea_chat_grupo();
                         JScrollPane scrollPane = new JScrollPane(area_nuevo_chat);
