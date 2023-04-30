@@ -473,7 +473,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                                 System.out.println(textAreas[i].getText() + " es igual el titulo "+paqueteRecibido.getNombre_chat_grupal());
                                 if (textAreas[i].getText().contains(paqueteRecibido.getNombre_chat_grupal())) {
                                     indice_para_impirmir = i;
-                                    textAreas[indice_para_impirmir].append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje()+"\n");
+                                    //textAreas[indice_para_impirmir].append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje()+"\n");
                                 }
                             }
                         }
