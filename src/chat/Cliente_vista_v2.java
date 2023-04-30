@@ -452,17 +452,18 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                     }
 
                 } else {
-
+                    System.out.println("mensaje personal");
                     if (!paqueteRecibido.getMensaje().equals("Online")) {
                         int i = buscar_tab_usuario(paqueteRecibido.getRemitente_nombre());
                         textAreas[i].append(paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje() + "\n");
                     } else {
+                        // si el mensaje es Online quiere decir que se conecto un nuevo cliente
                         // campo_chat.append(paqueteRecibido.getIps()+"\n");
                         HashMap<String, String> IPsMenu = paqueteRecibido.getIps();
                         Ips = paqueteRecibido.getIps();
                         //cb_clientes.removeAll();
-                        for (String clave : IPsMenu.values()) {
-                            generar_clientes(clave);
+                        for (String nombre : IPsMenu.values()) {
+                            generar_clientes(nombre);
                         }
                     }
                 }
