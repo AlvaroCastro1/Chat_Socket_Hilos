@@ -218,7 +218,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         int indice_actual = TabbedPane_para_chats.getSelectedIndex();
         // si es un chat grupal
-        if (TabbedPane_para_chats.getTitleAt(indice_actual).contains("Chat Grupal ")) {
+        if (TabbedPane_para_chats.getTitleAt(indice_actual).contains("Chat grupal")) {
             // recorre todos los chat grup hasta encontrarlo
             for (Map.Entry<String, PaqueteEnvio> entry : grupos.entrySet()) {
                 String titulo = entry.getKey();
@@ -237,6 +237,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                         datos.setRemitente_nombre(remitente_nombre);
                         datos.setRemitente_ip(remitente_ip);
                         datos.setEsGrupal(true);
+                        datos.setIps_grupo(integrantes);
 
                         ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream());
                         paquete_datos.writeObject(datos);
