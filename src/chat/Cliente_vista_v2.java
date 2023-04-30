@@ -436,6 +436,7 @@ public class Cliente_vista_v2 extends javax.swing.JFrame implements Runnable {
                         JScrollPane scrollPane = new JScrollPane(area_nuevo_chat);
                         TabbedPane_para_chats.addTab(paqueteRecibido.getNombre_chat_grupal(), scrollPane);
                         textAreas[textAreas.length + 1] = area_nuevo_chat;
+                        contador_panel++;
                     } else {
                         for (int i = 0; i < TabbedPane_para_chats.getComponentCount(); i++) {
                                 //textAreas[i].append("\n" + paqueteRecibido.getRemitente_nombre() + ": " + paqueteRecibido.getMensaje());
