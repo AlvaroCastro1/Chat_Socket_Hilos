@@ -6,7 +6,8 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -115,9 +116,13 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
             // System.out.println("escuchando");
             ServerSocket servidor = new ServerSocket(puerto);
 
-            String nombre, ip, mensaje;
+            String mensaje;
+            String remitente_nombre, remitente_ip;
+            String destinatario_nombre, destinatario_ip;
+
             PaqueteEnvio paquete_recibido;
-            ArrayList<String> listaIp = new ArrayList<String>();
+
+            HashMap<String, String> Ips = new HashMap<>(100);
 
             while (true) {
                 Socket miSocket = servidor.accept();
@@ -125,37 +130,56 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                 ObjectInputStream paquete_datos = new ObjectInputStream(miSocket.getInputStream());
                 paquete_recibido = (PaqueteEnvio) paquete_datos.readObject();
 
-                nombre = paquete_recibido.getNombre();
-                ip = paquete_recibido.getIp();
+                remitente_nombre = paquete_recibido.getRemitente_nombre();
+                remitente_ip = paquete_recibido.getRemitente_ip();
+
+                destinatario_nombre = paquete_recibido.getDestinatario_nombre();
+                destinatario_ip = paquete_recibido.getDestinatario_ip();
+
                 mensaje = paquete_recibido.getMensaje();
 
-                if (!mensaje.equals("Online")) {
-                    area_texto.append(nombre + ": " + mensaje + " para " + ip + "\n");
-                    Socket enviaDestinatario = new Socket(ip, puerto2);
-                    ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
-                    paqueteReenvio.writeObject(paquete_recibido);
-                    enviaDestinatario.close();
-                    paqueteReenvio.close();
-                    miSocket.close();
+                if (paquete_recibido.isGrupal()) {
 
-                } else {
-                    //------------------------Detectar online
-                    InetAddress localizacion = miSocket.getInetAddress();
-                    String ipRemote = localizacion.getHostAddress();
-                    area_texto.append(ipRemote + " Online\n");
-                    listaIp.add(ipRemote);
-                    paquete_recibido.setIps(listaIp);
-                    for (String ip_i : listaIp) {
-                        System.out.println("Array " + ip_i);
-                        Socket enviaDestinatario = new Socket(ip_i, puerto2);
+                    area_texto.append(remitente_nombre + ": " + mensaje + " PARA GRUPOGrupo\n");
+                    HashMap<String, String> temp_Destinatarios = paquete_recibido.getIps_grupo();
+                    // enviamos a todos los usuarios del chat grupal
+                    for (Map.Entry<String, String> entry : temp_Destinatarios.entrySet()) {
+                        Socket enviaDestinatario = new Socket(entry.getKey(), puerto2);
                         ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
                         paqueteReenvio.writeObject(paquete_recibido);
                         enviaDestinatario.close();
                         paqueteReenvio.close();
                         miSocket.close();
+
+                    }
+                } else {
+                    if (!mensaje.equals("Online")) {
+                        area_texto.append(remitente_nombre + ": " + mensaje + " para " + destinatario_nombre + "\n");
+                        Socket enviaDestinatario = new Socket(destinatario_ip, puerto2);
+                        ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
+                        paqueteReenvio.writeObject(paquete_recibido);
+                        enviaDestinatario.close();
+                        paqueteReenvio.close();
+                        miSocket.close();
+
+                    } else {
+                        //------------------------Detectar online
+                        InetAddress localizacion = miSocket.getInetAddress();
+                        String ipRemote = localizacion.getHostAddress();
+                        area_texto.append(remitente_nombre + "--->" + remitente_ip + " Online\n");
+                        Ips.put(ipRemote, remitente_nombre);
+                        paquete_recibido.setIps(Ips);
+                        for (String ip_i : Ips.keySet()) {
+                            // System.out.println("Array " + ip_i);
+                            Socket enviaDestinatario = new Socket(ip_i, puerto2);
+                            ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
+                            paqueteReenvio.writeObject(paquete_recibido);
+                            enviaDestinatario.close();
+                            paqueteReenvio.close();
+                            miSocket.close();
+                        }
                     }
                 }
-
                 /*DataInputStream flujo_entrada = new DataInputStream(miSocket.getInputStream());
                 String mensaje = flujo_entrada.readUTF();
 
